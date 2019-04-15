@@ -122,5 +122,9 @@ def main():
         
         if keypress == ord("s"):
             start_recording = True
+main()
 
+# free up memory
+camera.release()
+cv2.destroyAllWindows()
 
