@@ -61,4 +61,35 @@ for i in range(0, 100):
 
 for i in range(0, 100):
     testLabels.append([0, 0, 1])
+# Define the CNN Model
+tf.reset_default_graph()
+convnet=input_data(shape=[None,89,100,1],name='input')
+convnet=conv_2d(convnet,32,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+convnet=conv_2d(convnet,64,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,128,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,256,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,256,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,128,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,64,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=fully_connected(convnet,1000,activation='relu')
+convnet=dropout(convnet,0.75)
+
+convnet=fully_connected(convnet,3,activation='softmax')
+
+convnet=regression(convnet,optimizer='adam',learning_rate=0.001,loss='categorical_crossentropy',name='regression')
+
+model=tflearn.DNN(convnet,tensorboard_verbose=0)
 
