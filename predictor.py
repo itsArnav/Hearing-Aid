@@ -8,7 +8,6 @@ from PIL import Image
 import cv2
 import imutils
 
-# global variables
 bg = None
 
 def resizeImage(imageName):
@@ -47,7 +46,7 @@ def segment(image, threshold=25):
     if len(cnts) == 0:
         return
     else:
-        # based on contour area, get the maximum contour which is the hand
+        #  get the maximum contour which is the hand
         segmented = max(cnts, key=cv2.contourArea)
         return (thresholded, segmented)
 
