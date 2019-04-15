@@ -20,3 +20,16 @@ for i in range(0, 1000):
     image = cv2.imread('Dataset/FistImages/fist_' + str(i) + '.png')
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     loadedImages.append(gray_image.reshape(89, 100, 1))
+# Create OutputVector
+
+outputVectors = []
+for i in range(0, 1000):
+    outputVectors.append([1, 0, 0])
+
+for i in range(0, 1000):
+    outputVectors.append([0, 1, 0])
+
+for i in range(0, 1000):
+    outputVectors.append([0, 0, 1])
+
+testImages = []
