@@ -33,3 +33,32 @@ for i in range(0, 1000):
     outputVectors.append([0, 0, 1])
 
 testImages = []
+#Loading Images
+for i in range(0, 100):
+    image = cv2.imread('Dataset/SwingTest/swing_' + str(i) + '.png')
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    testImages.append(gray_image.reshape(89, 100, 1))
+
+
+for i in range(0, 100):
+    image = cv2.imread('Dataset/PalmTest/palm_' + str(i) + '.png')
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    testImages.append(gray_image.reshape(89, 100, 1))
+    
+
+for i in range(0, 100):
+    image = cv2.imread('Dataset/FistTest/fist_' + str(i) + '.png')
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    testImages.append(gray_image.reshape(89, 100, 1))
+
+testLabels = []
+
+for i in range(0, 100):
+    testLabels.append([1, 0, 0])
+    
+for i in range(0, 100):
+    testLabels.append([0, 1, 0])
+
+for i in range(0, 100):
+    testLabels.append([0, 0, 1])
+
