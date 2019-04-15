@@ -83,3 +83,117 @@ def main():
         
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (7, 7), 0)
+        
+        if num_frames < 30:
+            run_avg(gray, aWeight)
+        else:
+            # segment the hand region
+            hand = segment(gray)
+
+            # check whether hand region is segmented
+            if hand is not None:
+                # if yes, unpack the thresholded image and
+                # segmented region
+                (thresholded, segmented) = hand
+
+                # draw the segmented region and display the frame
+                cv2.drawContours(clone, [segmented + (right, top)], -1, (0, 0, 255))
+                if start_recording:
+                    cv2.imwrite('Temp.png', thresholded)
+                    resizeImage('Temp.png')
+                    predictedClass, confidence = getPredictedClass()
+                    showStatistics(predictedClass, confidence)
+                cv2.imshow("Thesholded", thresholded)
+
+        # draw the segmented hand
+        cv2.rectangle(clone, (left, top), (right, bottom), (0,255,0), 2)
+
+        # increment the number of frames
+        num_frames += 1
+
+        # display the frame with segmented hand
+        cv2.imshow("Video Feed", clone)
+
+        # observe the keypress by the user
+        keypress = cv2.waitKey(1) & 0xFF
+
+        # if the user pressed "q", then stop looping
+        if keypress == ord("q"):
+            break
+        
+        if keypress == ord("s"):
+            start_recording = True
+
+def getPredictedClass():
+    # Predict
+    image = cv2.imread('Temp.png')
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    prediction = model.predict([gray_image.reshape(89, 100, 1)])
+    return np.argmax(prediction), (np.amax(prediction) / (prediction[0][0] + prediction[0][1] + prediction[0][2]))
+
+def showStatistics(predictedClass, confidence):
+
+    textImage = np.zeros((300,512,3), np.uint8)
+    className = ""
+
+    if predictedClass == 0:
+        className = "Swing"
+    elif predictedClass == 1:
+        className = "Palm"
+    elif predictedClass == 2:
+        className = "Fist"
+
+    cv2.putText(textImage,"Pedicted Class : " + className, 
+    (30, 30), 
+    cv2.FONT_HERSHEY_SIMPLEX, 
+    1,
+    (255, 255, 255),
+    2)
+
+    cv2.putText(textImage,"Confidence : " + str(confidence * 100) + '%', 
+    (30, 100), 
+    cv2.FONT_HERSHEY_SIMPLEX, 
+    1,
+    (255, 255, 255),
+    2)
+    cv2.imshow("Statistics", textImage)
+
+
+
+
+# Model defined
+tf.reset_default_graph()
+convnet=input_data(shape=[None,89,100,1],name='input')
+convnet=conv_2d(convnet,32,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+convnet=conv_2d(convnet,64,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,128,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,256,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,256,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,128,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=conv_2d(convnet,64,2,activation='relu')
+convnet=max_pool_2d(convnet,2)
+
+convnet=fully_connected(convnet,1000,activation='relu')
+convnet=dropout(convnet,0.75)
+
+convnet=fully_connected(convnet,3,activation='softmax')
+
+convnet=regression(convnet,optimizer='adam',learning_rate=0.001,loss='categorical_crossentropy',name='regression')
+
+model=tflearn.DNN(convnet,tensorboard_verbose=0)
+
+# Load Saved Model
+model.load("GestureRecogModel.tfl")
+
+main()
