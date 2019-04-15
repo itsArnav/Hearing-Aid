@@ -1,6 +1,7 @@
 # organize imports
 import cv2
 import numpy as np
+import imutils
 
 # global variables
 bg = None
