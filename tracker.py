@@ -1,6 +1,5 @@
 # organize imports
 import cv2
-import imutils
 import numpy as np
 
 # global variables
@@ -123,8 +122,4 @@ def main():
         if keypress == ord("s"):
             start_recording = True
 
-main()
 
-# free up memory
-camera.release()
-cv2.destroyAllWindows()
