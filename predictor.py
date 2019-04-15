@@ -42,3 +42,44 @@ def segment(image, threshold=25):
 (_, cnts, _) = cv2.findContours(thresholded.copy(),
                                     cv2.RETR_EXTERNAL,
                                     cv2.CHAIN_APPROX_SIMPLE)
+
+    # return None, if no contours detected
+    if len(cnts) == 0:
+        return
+    else:
+        # based on contour area, get the maximum contour which is the hand
+        segmented = max(cnts, key=cv2.contourArea)
+        return (thresholded, segmented)
+
+def main():
+   
+    aWeight = 0.5
+
+   
+    camera = cv2.VideoCapture(0)
+
+ 
+    top, right, bottom, left = 10, 350, 225, 590
+
+   
+    num_frames = 0
+    start_recording = False
+
+
+    while(True):
+   
+        (grabbed, frame) = camera.read()
+
+        frame = imutils.resize(frame, width = 700)
+
+        frame = cv2.flip(frame, 1)
+
+        clone = frame.copy()
+
+        (height, width) = frame.shape[:2]
+
+                roi = frame[top:bottom, right:left]
+
+        
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (7, 7), 0)
