@@ -20,47 +20,38 @@ for i in range(0, 1000):
     image = cv2.imread('Dataset/FistImages/fist_' + str(i) + '.png')
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     loadedImages.append(gray_image.reshape(89, 100, 1))
-# Create OutputVector
 
+# Create OutputVector
 outputVectors = []
 for i in range(0, 1000):
     outputVectors.append([1, 0, 0])
-
 for i in range(0, 1000):
     outputVectors.append([0, 1, 0])
-
 for i in range(0, 1000):
     outputVectors.append([0, 0, 1])
-
 testImages = []
+
 #Loading Images
 for i in range(0, 100):
     image = cv2.imread('Dataset/SwingTest/swing_' + str(i) + '.png')
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     testImages.append(gray_image.reshape(89, 100, 1))
-
-
 for i in range(0, 100):
     image = cv2.imread('Dataset/PalmTest/palm_' + str(i) + '.png')
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     testImages.append(gray_image.reshape(89, 100, 1))
-    
-
 for i in range(0, 100):
     image = cv2.imread('Dataset/FistTest/fist_' + str(i) + '.png')
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     testImages.append(gray_image.reshape(89, 100, 1))
-
 testLabels = []
-
 for i in range(0, 100):
     testLabels.append([1, 0, 0])
-    
 for i in range(0, 100):
     testLabels.append([0, 1, 0])
-
 for i in range(0, 100):
     testLabels.append([0, 0, 1])
+
 # Define the CNN Model
 tf.reset_default_graph()
 convnet=input_data(shape=[None,89,100,1],name='input')
@@ -92,6 +83,7 @@ convnet=fully_connected(convnet,3,activation='softmax')
 convnet=regression(convnet,optimizer='adam',learning_rate=0.001,loss='categorical_crossentropy',name='regression')
 
 model=tflearn.DNN(convnet,tensorboard_verbose=0)
+
 # Shuffle Training Data
 loadedImages, outputVectors = shuffle(loadedImages, outputVectors, random_state=0)
 
