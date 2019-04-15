@@ -92,4 +92,13 @@ convnet=fully_connected(convnet,3,activation='softmax')
 convnet=regression(convnet,optimizer='adam',learning_rate=0.001,loss='categorical_crossentropy',name='regression')
 
 model=tflearn.DNN(convnet,tensorboard_verbose=0)
+# Shuffle Training Data
+loadedImages, outputVectors = shuffle(loadedImages, outputVectors, random_state=0)
+
+# Train model
+model.fit(loadedImages, outputVectors, n_epoch=50,
+           validation_set = (testImages, testLabels),
+           snapshot_step=100, show_metric=True, run_id='convnet_coursera')
+
+model.save("GestureRecogModel.tfl")
 
